@@ -35,8 +35,8 @@
 
 //PIN PULL UP PULL DOWN [2 bit]
 #define OP_GPIO_PUPD_NOPUPD         0x00            // pin no pull up or pulled down
-#define OP_GPIO_PUPD_PU             0x00            // pin pulled up
-#define OP_GPIO_PUPD_PD             0x00            // pin pulled down
+#define OP_GPIO_PUPD_PU             0x01            // pin pulled up
+#define OP_GPIO_PUPD_PD             0x02            // pin pulled down
 
 /* 
  *  Function Prototypes
