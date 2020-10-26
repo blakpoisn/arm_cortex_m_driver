@@ -1,22 +1,20 @@
-/*
- * stm32f407xx_driver.h
+/**
+ * @file      : stm32f407xx_driver.h
+ * @brief     : API Header for Driver implementation
  *
- *  Created on: Oct 16, 2020
- *      Author: Shubhankar Chaudhury
- *      
- *
+ * @author    : Shubhankar Chaudhury
  */
 
 #ifndef STM32F407XX_DRIVER_H_
 #define STM32F407XX_DRIVER_H_
 
-/* 
+/**
  *  Includes
  */
 
 #include <stm32f407xx_gpio.h>
 
-/* 
+/**
  *  Defines
  */
 
