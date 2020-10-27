@@ -12,6 +12,8 @@
  *  Includes
  */
 
+#include <stdint.h>
+#include <stddef.h>
 #include <stm32f407xx_gpio.h>
 
 /**
@@ -73,10 +75,6 @@
 #define MA_GPIOH_END        0x40021FFFU
 #define MA_GPIOI_BEG        0x40022000U         // General Purpose IO - Port I [AHB1]
 #define MA_GPIOI_END        0x400223FFU
-#define MA_GPIOJ_BEG        0x40022400U         // General Purpose IO - Port J [AHB1]
-#define MA_GPIOJ_END        0x400227FFU
-#define MA_GPIOK_BEG        0x40022800U         // General Purpose IO - Port K [AHB1]
-#define MA_GPIOK_END        0x40022BFFU
 
 #define MO_GPIOx_MODER      0X00                // GPIO port mode register
 #define MO_GPIOx_OTYPER     0x04                // GPIO port output type register

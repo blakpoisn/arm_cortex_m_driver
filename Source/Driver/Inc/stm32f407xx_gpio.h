@@ -18,17 +18,15 @@
  */
 
 //GPIO NAME
-#define OP_GPIO_NAME_PORTA          0               //PortA
-#define OP_GPIO_NAME_PORTB          1               //PortB
-#define OP_GPIO_NAME_PORTC          2               //PortC
-#define OP_GPIO_NAME_PORTD          3               //PortD
-#define OP_GPIO_NAME_PORTE          4               //PortE
-#define OP_GPIO_NAME_PORTF          5               //PortF
-#define OP_GPIO_NAME_PORTG          6               //PortG
-#define OP_GPIO_NAME_PORTH          7               //PortH
-#define OP_GPIO_NAME_PORTI          8               //PortI
-#define OP_GPIO_NAME_PORTJ          9               //PortJ
-#define OP_GPIO_NAME_PORTK          10              //PortK
+#define OP_GPIO_PORT_A              0               //PortA
+#define OP_GPIO_PORT_B              1               //PortB
+#define OP_GPIO_PORT_C              2               //PortC
+#define OP_GPIO_PORT_D              3               //PortD
+#define OP_GPIO_PORT_E              4               //PortE
+#define OP_GPIO_PORT_F              5               //PortF
+#define OP_GPIO_PORT_G              6               //PortG
+#define OP_GPIO_PORT_H              7               //PortH
+#define OP_GPIO_PORT_I              8               //PortI
 
 //GPIO PIN number
 #define OP_GPIO_PIN_0               0               //Pin 0
@@ -91,7 +89,7 @@
  *  Structures
  */
 typedef struct {
-    uint8_t GPIO_name;
+    uint8_t GPIO_port;
     uint8_t GPIO_pin;
     uint8_t GPIO_mode;
     uint8_t GPIO_otype;
@@ -103,7 +101,9 @@ typedef struct {
 /* 
  *  Function Prototypes
  */
-void GPIO_pin_init(gpio_handle_t *gpio_handle);
-
+uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
+uint8_t gpio_pin_deinit(gpio_handle_t *gpio_handle);
+uint8_t gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
+uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
 
 #endif /* STM32F407XX_GPIO_H_ */
