@@ -91,7 +91,7 @@
 typedef struct {
     uint8_t GPIO_port;
     uint8_t GPIO_pin;
-    uint8_t GPIO_mode;
+    uint8_t GPIO_pinmode;
     uint8_t GPIO_otype;
     uint8_t GPIO_ospeed;
     uint8_t GPIO_pushpull;
