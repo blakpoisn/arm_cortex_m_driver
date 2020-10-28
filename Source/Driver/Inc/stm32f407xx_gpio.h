@@ -101,9 +101,11 @@ typedef struct {
 /* 
  *  Function Prototypes
  */
+gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
-uint8_t gpio_pin_deinit(gpio_handle_t *gpio_handle);
+
 uint8_t gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
+uint8_t gpio_port_deinit(uint8_t gpio_port);
 
 #endif /* STM32F407XX_GPIO_H_ */
