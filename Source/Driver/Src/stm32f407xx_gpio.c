@@ -91,7 +91,9 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
     switch (gpio_handle->GPIO_pinmode)
     {
         case OP_GPIO_PINMODE_IN:
-            //TODO
+            offset_ptr = base_ptr + MO_GPIOx_PUPDR;
+            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
             break;
         case OP_GPIO_PINMODE_OUT:
             offset_ptr = base_ptr + MO_GPIOx_OTYPER;
@@ -101,12 +103,15 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
             offset_ptr = base_ptr + MO_GPIOx_OSPEEDR;
             *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
             *offset_ptr |= (gpio_handle->GPIO_ospeed << (2*gpio_handle->GPIO_pin));
+
+            offset_ptr = base_ptr + MO_GPIOx_PUPDR;
+            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
             break;
         case OP_GPIO_PINMODE_ALT:
-            //TODO
-            break;
-        case OP_GPIO_PINMODE_ANALOG:
-            //TODO
+            offset_ptr = base_ptr + MO_GPIOx_AFRL + ((gpio_handle->GPIO_pin * 4) / 32);
+            *offset_ptr &= ~(0x0F << (4 * (gpio_handle->GPIO_pin % 8)));
+            *offset_ptr |= (gpio_handle->GPIO_atlFunc << (4 * (gpio_handle->GPIO_pin % 8)));
             break;
     }
 
