@@ -23,6 +23,7 @@
 //Commons
 #define DISABLE     0x00
 #define ENABLE      0x01
+#define ADDR_OFFSET(x)      (x/4)
 
 //RCC
 #define MA_RCC_BEG          0x40023800U         // Reset and Clock Control [AHB1]

@@ -7,6 +7,11 @@
 
 #include <stm32f407xx_gpio.h>
 
+/*
+ * Static Functions
+ */
+static uint32_t * port_address(uint8_t port);
+
 /**************************************************************************************************
  * @fn      : gpio_handle_init                                                                    *
  * @brief   : Initializes the gpio_handle_t object.                                               *
@@ -40,10 +45,85 @@ gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin)
  */
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
 {
-    uint32_t *base_ptr, *offset_ptr;
+    uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
+    uint32_t *offset_ptr;
     uint32_t *rcc_ahb1enr_ptr = (uint32_t *) (MA_RCC_BEG + MO_RCC_AHB1ENR);
 
-    switch (gpio_handle->GPIO_port)
+    if ((base_ptr == NULL) || (gpio_handle->GPIO_pin > 0x0F))
+    {
+        return 0;
+    }
+
+    //enable clock
+    *rcc_ahb1enr_ptr |= (ENABLE << gpio_handle->GPIO_port);
+
+    // mode cofig
+    offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_MODER);
+    *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+    *offset_ptr |= (gpio_handle->GPIO_pinmode << (2*gpio_handle->GPIO_pin));
+
+    switch (gpio_handle->GPIO_pinmode)
+    {
+        case OP_GPIO_PINMODE_IN:
+            offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_PUPDR);
+            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
+            break;
+        case OP_GPIO_PINMODE_OUT:
+            offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_OTYPER);
+            *offset_ptr &= ~(0x01 << gpio_handle->GPIO_pin);
+            *offset_ptr |= (gpio_handle->GPIO_otype << gpio_handle->GPIO_pin);
+
+            offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_OSPEEDR);
+            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+            *offset_ptr |= (gpio_handle->GPIO_ospeed << (2*gpio_handle->GPIO_pin));
+
+            offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_PUPDR);
+            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
+            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
+            break;
+        case OP_GPIO_PINMODE_ALT:
+            offset_ptr = base_ptr + (ADDR_OFFSET(MO_GPIOx_AFRL) + (gpio_handle->GPIO_pin * 4) / 32);
+            *offset_ptr &= ~(0x0F << (4 * (gpio_handle->GPIO_pin % 8)));
+            *offset_ptr |= (gpio_handle->GPIO_atlFunc << (4 * (gpio_handle->GPIO_pin % 8)));
+            break;
+    }
+
+    return 1;
+}
+
+/**************************************************************************************************
+ * @fn      : gpio_pin_write                                                                      *
+ * @brief   : set / reset pin.                                                                    *
+ *                                                                                                *
+ * @param   : gpio_handle - handle pointer to the port_pin object.                                *
+ * @param   : state - enable or disable state.                                                    *
+ * @return  : void                                                                                *
+ **************************************************************************************************
+ */
+void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
+{
+    uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
+    uint32_t *bsrr_ptr;
+    if ((base_ptr != NULL) && (gpio_handle->GPIO_pin < 16))
+    {
+        bsrr_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_BSRR);
+        if(state)
+        {
+            *bsrr_ptr = ENABLE << (gpio_handle->GPIO_pin);
+        }
+        else
+        {
+            *bsrr_ptr = ENABLE << (gpio_handle->GPIO_pin + 16);
+        }
+    }
+}
+
+//-Static-Fuction----------------------------------------------------------------------------------
+static uint32_t * port_address(uint8_t port)
+{
+    uint32_t *base_ptr = NULL;
+    switch (port)
     {
         case OP_GPIO_PORT_A:
             base_ptr = (uint32_t *) MA_GPIOA_BEG;
@@ -72,48 +152,7 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
         case OP_GPIO_PORT_I:
             base_ptr = (uint32_t *) MA_GPIOI_BEG;
             break;
-        default:
-            base_ptr = NULL;
-    }
-    if ((base_ptr == NULL) || (gpio_handle->GPIO_pin > 0x0F))
-    {
-        return 0;
     }
 
-    //enable clock
-    *rcc_ahb1enr_ptr |= (ENABLE << gpio_handle->GPIO_port);
-
-    // mode cofig
-    offset_ptr = base_ptr + MO_GPIOx_MODER;
-    *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-    *offset_ptr |= (gpio_handle->GPIO_pinmode << (2*gpio_handle->GPIO_pin));
-
-    switch (gpio_handle->GPIO_pinmode)
-    {
-        case OP_GPIO_PINMODE_IN:
-            offset_ptr = base_ptr + MO_GPIOx_PUPDR;
-            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
-            break;
-        case OP_GPIO_PINMODE_OUT:
-            offset_ptr = base_ptr + MO_GPIOx_OTYPER;
-            *offset_ptr &= ~(0x01 << gpio_handle->GPIO_pin);
-            *offset_ptr |= (gpio_handle->GPIO_otype << gpio_handle->GPIO_pin);
-
-            offset_ptr = base_ptr + MO_GPIOx_OSPEEDR;
-            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-            *offset_ptr |= (gpio_handle->GPIO_ospeed << (2*gpio_handle->GPIO_pin));
-
-            offset_ptr = base_ptr + MO_GPIOx_PUPDR;
-            *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-            *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
-            break;
-        case OP_GPIO_PINMODE_ALT:
-            offset_ptr = base_ptr + MO_GPIOx_AFRL + ((gpio_handle->GPIO_pin * 4) / 32);
-            *offset_ptr &= ~(0x0F << (4 * (gpio_handle->GPIO_pin % 8)));
-            *offset_ptr |= (gpio_handle->GPIO_atlFunc << (4 * (gpio_handle->GPIO_pin % 8)));
-            break;
-    }
-
-    return 1;
+    return base_ptr;
 }
