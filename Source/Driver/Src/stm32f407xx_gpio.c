@@ -12,6 +12,10 @@
  */
 static uint32_t * port_address(uint8_t port);
 
+/*
+ * API Implementations
+ */
+
 /**************************************************************************************************
  * @fn      : gpio_handle_init                                                                    *
  * @brief   : Initializes the gpio_handle_t object.                                               *
@@ -97,7 +101,7 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
  * @brief   : set / reset pin.                                                                    *
  *                                                                                                *
  * @param   : gpio_handle - handle pointer to the port_pin object.                                *
- * @param   : state - enable or disable state.                                                    *
+ * @param   : state - ON or OFF state.                                                            *
  * @return  : void                                                                                *
  **************************************************************************************************
  */
@@ -119,10 +123,28 @@ void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
     }
 }
 
+/**************************************************************************************************
+ * @fn      : gpio_pin_write                                                                      *
+ * @brief   : set / reset pin.                                                                    *
+ *                                                                                                *
+ * @param   : gpio_handle - handle pointer to the port_pin object.                                *
+ * @param   : state - ON or OFF state.                                                            *
+ * @return  : void                                                                                *
+ **************************************************************************************************
+ */
+uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
+{
+    uint8_t state;
+    uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
+    uint32_t *idr_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_IDR);
+    state = (uint8_t) (*idr_ptr >> gpio_handle->GPIO_pin) & ENABLE;
+    return state;
+}
+
 //-Static-Fuction----------------------------------------------------------------------------------
 static uint32_t * port_address(uint8_t port)
 {
-    uint32_t *base_ptr = NULL;
+    uint32_t *base_ptr;
     switch (port)
     {
         case OP_GPIO_PORT_A:
@@ -152,6 +174,8 @@ static uint32_t * port_address(uint8_t port)
         case OP_GPIO_PORT_I:
             base_ptr = (uint32_t *) MA_GPIOI_BEG;
             break;
+        default:
+            base_ptr = NULL;
     }
 
     return base_ptr;
