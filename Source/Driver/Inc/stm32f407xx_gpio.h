@@ -85,6 +85,11 @@
 #define OP_GPIO_ALTFUNC_AF14        0x0E            // pin alternate function type 14
 #define OP_GPIO_ALTFUNC_AF15        0x0F            // pin alternate function type 15
 
+//trigger options
+#define OP_GPIO_INTR_FALL           0x00            // Falling edge interrupt trigger
+#define OP_GPIO_INTR_RISE           0x01            // Rising edge interrupt trigger
+#define OP_GPIO_INTR_BOTH           0x02            // Both edge interrupt trigger
+
 /*
  *  Structures
  */
@@ -105,5 +110,8 @@ gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
+void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);
+/// Stage Event
+/// handle ISR
 
 #endif /* STM32F407XX_GPIO_H_ */

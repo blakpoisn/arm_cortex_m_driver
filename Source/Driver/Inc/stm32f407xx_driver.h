@@ -27,10 +27,10 @@
 #define ON          ENABLE
 #define ADDR_OFFSET(x)      (x/4)               // Offset for 32 bit pointers
 
+//~~~~~AHB1~~~~~
 //RCC
 #define MA_RCC_BEG          0x40023800U         // Reset and Clock Control [AHB1]
 #define MA_RCC_END          0x40023BFFU
-
 #define MO_RCC_CR           0x00                // RCC clock control register
 #define MO_RCC_PLLCFGR      0x04                // RCC PLL configuration register
 #define MO_RCC_CFGR         0x08                // RCC clock configuration register
@@ -54,11 +54,9 @@
 #define MO_RCC_CSR          0x74                // RCC clock control & status register
 #define MO_RCC_SSCGR        0x80                // RCC spread spectrum clock generation register
 #define MO_RCC_PLLI2SCFGR   0x84                // RCC PLLI2S configuration register
-
 //CRC
 #define MA_CRC_BEG          0x40023000U         // Cyclic Redundancy Check [AHB1]
 #define MA_CRC_END          0x400233FFU
-
 //GPIO
 #define MA_GPIOA_BEG        0x40020000U         // General Purpose IO - Port A [AHB1]
 #define MA_GPIOA_END        0x400203FFU
@@ -78,7 +76,6 @@
 #define MA_GPIOH_END        0x40021FFFU
 #define MA_GPIOI_BEG        0x40022000U         // General Purpose IO - Port I [AHB1]
 #define MA_GPIOI_END        0x400223FFU
-
 #define MO_GPIOx_MODER      0X00                // GPIO port mode register
 #define MO_GPIOx_OTYPER     0x04                // GPIO port output type register
 #define MO_GPIOx_OSPEEDR    0x08                // GPIO output speed register
@@ -90,5 +87,25 @@
 #define MO_GPIOx_AFRL       0x20                // GPIO port bit alternate function low register (7:0)
 #define MO_GPIOx_AFRH       0x24                // GPIO port bit alternate function high register (15:8)
 
+//~~~~APB2~~~~~
+//EXTI
+#define MA_EXTI_BEG         0x40013C00U         // External interrupt/event controller
+#define MA_EXTI_END         0x40013FFFU
+#define MO_EXTI_IMR         0x00                // Interrupt mask register
+#define MO_EXTI_EMR         0x04                // Event mask register
+#define MO_EXTI_RTSR        0x08                // Rising trigger selection register
+#define MO_EXTI_FTSR        0x0C                // Falling trigger selection register
+#define MO_EXTI_SWIER       0x10                // Software interrupt event register
+#define MO_EXTI_PR          0x14                // Pending register
+//SYSCFG
+#define MA_SYSCFG_BEG       0x40013800U         // System configuration
+#define MA_SYSCFG_END       0x40013BFFU
+#define MO_SYSCFG_MEMRMP    0x00                // Memory remap register
+#define MO_SYSCFG_PMC       0x04                // Peripheral mode configuration register
+#define MO_SYSCFG_EXTICR1   0x08                // EXTI configuration register 1
+#define MO_SYSCFG_EXTICR2   0x0C                // EXTI configuration register 2
+#define MO_SYSCFG_EXTICR3   0x10                // EXTI configuration register 3
+#define MO_SYSCFG_EXTICR4   0x14                // EXTI configuration register 4
+#define MO_SYSCFG_CMPCR     0x20                // Compensation cell control register
 
 #endif /* STM32F407XX_DRIVER_H_ */

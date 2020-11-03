@@ -141,6 +141,20 @@ uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
     return state;
 }
 
+/**************************************************************************************************
+ * @fn      : gpio_stage_intr                                                                     *
+ * @brief   : stages interrupt with given option (rising/falling/both edge).                      *
+ *                                                                                                *
+ * @param   : gpio_handle - handle pointer to the port_pin object.                                *
+ * @param   : opt - option for interrupt.                                                         *
+ * @return  : void                                                                                *
+ **************************************************************************************************
+ */
+void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt)
+{
+    //TODO
+}
+
 //-Static-Fuction----------------------------------------------------------------------------------
 static uint32_t * port_address(uint8_t port)
 {
