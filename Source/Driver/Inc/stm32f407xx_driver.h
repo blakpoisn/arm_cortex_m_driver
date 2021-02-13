@@ -1,26 +1,23 @@
-/**
+/***************************************************************************************************
  * @file      : stm32f407xx_driver.h
  * @brief     : API Header for Driver implementation
  *
  * @author    : Shubhankar Chaudhury
- */
+ * @date      : 00 Xxx 20xx
+ **************************************************************************************************/
 
 #ifndef STM32F407XX_DRIVER_H_
 #define STM32F407XX_DRIVER_H_
 
-/**
- *  Includes
- */
+/// Includes ---------------------------------------------------------------------------------------
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stm32f407xx_gpio.h>
 
-/**
- *  Defines
- */
+/// Defines ----------------------------------------------------------------------------------------
 
-//Commons
+//Common
 #define DISABLE     0x00
 #define ENABLE      0x01
 #define OFF         DISABLE

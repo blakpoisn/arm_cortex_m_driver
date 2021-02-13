@@ -1,21 +1,19 @@
-/**
+/***************************************************************************************************
  * @file      : stm32f407xx_gpio.h
  * @brief     : API Header for GPIO implementation
  * 
  * @author    : Shubhankar Chaudhury
- */
+ * @date      : 00 Xxx 20xx
+ **************************************************************************************************/
 
 #ifndef STM32F407XX_GPIO_H_
 #define STM32F407XX_GPIO_H_
 
-/* 
- *  Includes
- */
+/// Includes ---------------------------------------------------------------------------------------
+
 #include <stm32f407xx_driver.h>
 
-/* 
- *  Defines
- */
+/// Defines ----------------------------------------------------------------------------------------
 
 //GPIO NAME
 #define OP_GPIO_PORT_A              0               //PortA
@@ -90,9 +88,8 @@
 #define OP_GPIO_INTR_RISE           0x01            // Rising edge interrupt trigger
 #define OP_GPIO_INTR_BOTH           0x02            // Both edge interrupt trigger
 
-/*
- *  Structures
- */
+/// Structures -------------------------------------------------------------------------------------
+
 typedef struct {
     uint8_t GPIO_port;
     uint8_t GPIO_pin;
@@ -103,9 +100,8 @@ typedef struct {
     uint8_t GPIO_atlFunc;
 } gpio_handle_t;
 
-/* 
- *  Function Prototypes
- */
+/// Function Prototypes ----------------------------------------------------------------------------
+
 gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);

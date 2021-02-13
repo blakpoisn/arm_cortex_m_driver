@@ -1,30 +1,27 @@
-/**
+/***************************************************************************************************
  * @file      : stm32f407xx_gpio.c
  * @brief     : Driver API implementation for GPIO peripheral.
  *
  * @author    : Shubhankar Chaudhury
- */
+ * @date      : 00 Xxx 20xx
+ **************************************************************************************************/
 
 #include <stm32f407xx_gpio.h>
 
-/*
- * Static Functions
- */
+/// Static Functions -------------------------------------------------------------------------------
+
 static uint32_t * port_address(uint8_t port);
 
-/*
- * API Implementations
- */
+/// API Implementations ----------------------------------------------------------------------------
 
-/**************************************************************************************************
- * @fn      : gpio_handle_init                                                                    *
- * @brief   : Initializes the gpio_handle_t object.                                               *
- *                                                                                                *
- * @param   : port - the port to be initialized with.                                             *
- * @param   : pin - the pin to be initialized with.                                               *
- * @return  : gpio_handle_t object.                                                               *
- **************************************************************************************************
- */
+/***************************************************************************************************
+ * @fn      : gpio_handle_init
+ * @brief   : Initializes the gpio_handle_t object.
+ *
+ * @arg     : port - the port to be initialized with.
+ * @arg     : pin - the pin to be initialized with.
+ * @return  : gpio_handle_t object.
+ **************************************************************************************************/
 gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin)
 {
     gpio_handle_t obj;
@@ -39,14 +36,13 @@ gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin)
     return obj;
 }
 
-/**************************************************************************************************
- * @fn      : gpio_pin_init                                                                       *
- * @brief   : Initializes the pin.                                                                *
- *                                                                                                *
- * @param   : gpio_handle - handle pointer to the port_pin object.                                *
- * @return  : initialization successful indication with 1 (true).                                 *
- **************************************************************************************************
- */
+/***************************************************************************************************
+ * @fn      : gpio_pin_init
+ * @brief   : Initializes the pin.
+ *
+ * @arg     : gpio_handle - handle pointer to the port_pin object.
+ * @return  : initialization successful indication with 1 (true).
+ **************************************************************************************************/
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
 {
     uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
@@ -61,7 +57,7 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
     //enable clock
     *rcc_ahb1enr_ptr |= (ENABLE << gpio_handle->GPIO_port);
 
-    // mode cofig
+    // mode config
     offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_MODER);
     *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
     *offset_ptr |= (gpio_handle->GPIO_pinmode << (2*gpio_handle->GPIO_pin));
@@ -96,15 +92,14 @@ uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
     return 1;
 }
 
-/**************************************************************************************************
- * @fn      : gpio_pin_write                                                                      *
- * @brief   : set / reset pin.                                                                    *
- *                                                                                                *
- * @param   : gpio_handle - handle pointer to the port_pin object.                                *
- * @param   : state - ON or OFF state.                                                            *
- * @return  : void                                                                                *
- **************************************************************************************************
- */
+/***************************************************************************************************
+ * @fn      : gpio_pin_write
+ * @brief   : set / reset pin.
+ *
+ * @arg     : gpio_handle - handle pointer to the port_pin object.
+ * @arg     : state - ON or OFF state.
+ * @return  : void
+ **************************************************************************************************/
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
 {
     uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
@@ -123,15 +118,14 @@ void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
     }
 }
 
-/**************************************************************************************************
- * @fn      : gpio_pin_write                                                                      *
- * @brief   : set / reset pin.                                                                    *
- *                                                                                                *
- * @param   : gpio_handle - handle pointer to the port_pin object.                                *
- * @param   : state - ON or OFF state.                                                            *
- * @return  : void                                                                                *
- **************************************************************************************************
- */
+/***************************************************************************************************
+ * @fn      : gpio_pin_write
+ * @brief   : set / reset pin.
+ *
+ * @arg     : gpio_handle - handle pointer to the port_pin object.
+ * @arg     : state - ON or OFF state.
+ * @return  : void
+ **************************************************************************************************/
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
 {
     uint8_t state;
@@ -141,21 +135,28 @@ uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
     return state;
 }
 
-/**************************************************************************************************
- * @fn      : gpio_stage_intr                                                                     *
- * @brief   : stages interrupt with given option (rising/falling/both edge).                      *
- *                                                                                                *
- * @param   : gpio_handle - handle pointer to the port_pin object.                                *
- * @param   : opt - option for interrupt.                                                         *
- * @return  : void                                                                                *
- **************************************************************************************************
- */
+/***************************************************************************************************
+ * @fn      : gpio_stage_intr
+ * @brief   : stages interrupt with given option (rising/falling/both edge).
+ *
+ * @arg     : gpio_handle - handle pointer to the port_pin object.
+ * @arg     : opt - option for interrupt falling/rising trigger.
+ * @return  : void
+ **************************************************************************************************/
 void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt)
 {
     //TODO
 }
 
-//-Static-Fuction----------------------------------------------------------------------------------
+/// Static Fuction Implementation ------------------------------------------------------------------
+
+/***************************************************************************************************
+ * @fn      : port_address
+ * @brief   : returns the port's base address
+ *
+ * @arg     : port - port name enumeration (OP_GPIO_PORT_x)
+ * @return  : base_ptr - pointer to the base address of the given port
+ **************************************************************************************************/
 static uint32_t * port_address(uint8_t port)
 {
     uint32_t *base_ptr;
