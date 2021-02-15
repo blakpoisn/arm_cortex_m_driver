@@ -13,7 +13,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <stm32f407xx_gpio.h>
 
 /// Defines ----------------------------------------------------------------------------------------
 
@@ -23,6 +22,7 @@
 #define OFF         DISABLE
 #define ON          ENABLE
 #define ADDR_OFFSET(x)      (x/4)               // Offset for 32 bit pointers
+#define ADDR_WITH_OFFSET(x,y)   (x+y)           // Address with offset added
 
 //~~~~~AHB1~~~~~
 //RCC

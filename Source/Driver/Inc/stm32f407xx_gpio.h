@@ -87,6 +87,12 @@
 #define OP_GPIO_INTR_FALL           0x00            // Falling edge interrupt trigger
 #define OP_GPIO_INTR_RISE           0x01            // Rising edge interrupt trigger
 #define OP_GPIO_INTR_BOTH           0x02            // Both edge interrupt trigger
+#define OP_GPIO_INTR_NONE           0x03            // Disable interrupt trigger
+
+#define OP_GPIO_EVENT_FALL          0x00            // Falling edge interrupt trigger
+#define OP_GPIO_EVENT_RISE          0x01            // Rising edge interrupt trigger
+#define OP_GPIO_EVENT_BOTH          0x02            // Both edge interrupt trigger
+#define OP_GPIO_EVENT_NONE          0x03            // Disable interrupt trigger
 
 /// Structures -------------------------------------------------------------------------------------
 
@@ -104,10 +110,12 @@ typedef struct {
 
 gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
+void gpio_port_enable(uint8_t gpio_port, uint8_t state);
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
 void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);
-/// Stage Event
-/// handle ISR
+//void gpio_stage_event(gpio_handle_t *gpio_handle, uint8_t opt);
+//void gpio_trig_swintr(gpio_handle_t *gpio_handle);
+//void gpio_handle_irq(gpio_handle_t *gpio_handle)
 
 #endif /* STM32F407XX_GPIO_H_ */
