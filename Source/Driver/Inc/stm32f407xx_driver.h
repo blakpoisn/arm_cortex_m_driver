@@ -1,21 +1,20 @@
 /***************************************************************************************************
- * @file      : stm32f407xx_driver.h
- * @brief     : API Header for Driver implementation
- *
- * @author    : Shubhankar Chaudhury
- * @date      : 00 Xxx 20xx
+ * @file      stm32f407xx_driver.h
+ * @brief     API Header for Driver implementation
+ *            
+ * @author    Shubhankar Chaudhury
+ * @date      28 Feb 2021
  **************************************************************************************************/
 
 #ifndef STM32F407XX_DRIVER_H_
 #define STM32F407XX_DRIVER_H_
 
-/// Includes ---------------------------------------------------------------------------------------
+// Includes ---------------------------------------------------------------------------------------
 
 #include <stdint.h>
 #include <stddef.h>
-#include <stm32f407xx_gpio.h>
 
-/// Defines ----------------------------------------------------------------------------------------
+// Defines ----------------------------------------------------------------------------------------
 
 //Common
 #define DISABLE     0x00
@@ -23,6 +22,7 @@
 #define OFF         DISABLE
 #define ON          ENABLE
 #define ADDR_OFFSET(x)      (x/4)               // Offset for 32 bit pointers
+#define ADDR_WITH_OFFSET(x,y)   (x+y)           // Address with offset added
 
 //~~~~~AHB1~~~~~
 //RCC
