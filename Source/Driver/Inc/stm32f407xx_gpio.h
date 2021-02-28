@@ -1,19 +1,18 @@
 /***************************************************************************************************
- * @file      : stm32f407xx_gpio.h
- * @brief     : API Header for GPIO implementation
+ * @file      stm32f407xx_gpio.h
+ * @brief     API Header for GPIO implementation.
  * 
- * @author    : Shubhankar Chaudhury
- * @date      : 00 Xxx 20xx
+ * @author    Shubhankar Chaudhury
+ * @date      00 Xxx 20xx
  **************************************************************************************************/
 
 #ifndef STM32F407XX_GPIO_H_
 #define STM32F407XX_GPIO_H_
 
-/// Includes ---------------------------------------------------------------------------------------
-
+// Includes ----------------------------------------------------------------------------------------
 #include <stm32f407xx_driver.h>
 
-/// Defines ----------------------------------------------------------------------------------------
+// Defines -----------------------------------------------------------------------------------------
 
 //GPIO NAME
 #define OP_GPIO_PORT_A              0               //PortA
@@ -94,8 +93,7 @@
 #define OP_GPIO_EVENT_BOTH          0x02            // Both edge interrupt trigger
 #define OP_GPIO_EVENT_NONE          0x03            // Disable interrupt trigger
 
-/// Structures -------------------------------------------------------------------------------------
-
+// Structures --------------------------------------------------------------------------------------
 typedef struct {
     uint8_t GPIO_port;
     uint8_t GPIO_pin;
@@ -106,11 +104,13 @@ typedef struct {
     uint8_t GPIO_atlFunc;
 } gpio_handle_t;
 
-/// Function Prototypes ----------------------------------------------------------------------------
+// Function Prototypes -----------------------------------------------------------------------------
 
 gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
 uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
-void gpio_port_enable(uint8_t gpio_port, uint8_t state);
+void gpio_port_switch(uint8_t gpio_port, uint8_t state);
+void gpio_port_reset(uint8_t gpio_port);
+void gpio_pin_toggle(gpio_handle_t *gpio_handle);
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
 void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);

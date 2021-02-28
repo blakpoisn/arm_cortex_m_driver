@@ -1,20 +1,20 @@
 /***************************************************************************************************
- * @file      : stm32f407xx_driver.h
- * @brief     : API Header for Driver implementation
- *
- * @author    : Shubhankar Chaudhury
- * @date      : 00 Xxx 20xx
+ * @file      stm32f407xx_driver.h
+ * @brief     API Header for Driver implementation
+ *            
+ * @author    Shubhankar Chaudhury
+ * @date      28 Feb 2021
  **************************************************************************************************/
 
 #ifndef STM32F407XX_DRIVER_H_
 #define STM32F407XX_DRIVER_H_
 
-/// Includes ---------------------------------------------------------------------------------------
+// Includes ---------------------------------------------------------------------------------------
 
 #include <stdint.h>
 #include <stddef.h>
 
-/// Defines ----------------------------------------------------------------------------------------
+// Defines ----------------------------------------------------------------------------------------
 
 //Common
 #define DISABLE     0x00
