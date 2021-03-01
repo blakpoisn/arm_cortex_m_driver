@@ -3,7 +3,7 @@
  * @brief     API Header for GPIO implementation.
  * 
  * @author    Shubhankar Chaudhury
- * @date      00 Xxx 20xx
+ * @date      01 Mar 2021
  **************************************************************************************************/
 
 #ifndef STM32F407XX_GPIO_H_
@@ -12,108 +12,147 @@
 // Includes ----------------------------------------------------------------------------------------
 #include <stm32f407xx_driver.h>
 
-// Defines -----------------------------------------------------------------------------------------
+// Enumerations ------------------------------------------------------------------------------------
+/**
+ *  @brief Enumeration for GPIO Port selection options.
+ */
+typedef enum {
+  GPIO_PORT_A,           /*!< GPIO Port A Selection. */
+  GPIO_PORT_B,           /*!< GPIO Port B Selection. */
+  GPIO_PORT_C,           /*!< GPIO Port C Selection. */
+  GPIO_PORT_D,           /*!< GPIO Port D Selection. */
+  GPIO_PORT_E,           /*!< GPIO Port E Selection. */
+  GPIO_PORT_F,           /*!< GPIO Port F Selection. */
+  GPIO_PORT_G,           /*!< GPIO Port G Selection. */
+  GPIO_PORT_H,           /*!< GPIO Port H Selection. */
+  GPIO_PORT_I            /*!< GPIO Port I Selection. */
+} gpio_port_t;
 
-//GPIO NAME
-#define OP_GPIO_PORT_A              0               //PortA
-#define OP_GPIO_PORT_B              1               //PortB
-#define OP_GPIO_PORT_C              2               //PortC
-#define OP_GPIO_PORT_D              3               //PortD
-#define OP_GPIO_PORT_E              4               //PortE
-#define OP_GPIO_PORT_F              5               //PortF
-#define OP_GPIO_PORT_G              6               //PortG
-#define OP_GPIO_PORT_H              7               //PortH
-#define OP_GPIO_PORT_I              8               //PortI
+/**
+ *  @brief Enumeration for GPIO Port Pin selection options.
+ */
+typedef enum {
+  GPIO_PIN_0 ,         /*!< GPIO Port Pin 0  Selection. */
+  GPIO_PIN_1 ,         /*!< GPIO Port Pin 1  Selection. */
+  GPIO_PIN_2 ,         /*!< GPIO Port Pin 2  Selection. */
+  GPIO_PIN_3 ,         /*!< GPIO Port Pin 3  Selection. */
+  GPIO_PIN_4 ,         /*!< GPIO Port Pin 4  Selection. */
+  GPIO_PIN_5 ,         /*!< GPIO Port Pin 5  Selection. */
+  GPIO_PIN_6 ,         /*!< GPIO Port Pin 6  Selection. */
+  GPIO_PIN_7 ,         /*!< GPIO Port Pin 7  Selection. */
+  GPIO_PIN_8 ,         /*!< GPIO Port Pin 8  Selection. */
+  GPIO_PIN_9 ,         /*!< GPIO Port Pin 9  Selection. */
+  GPIO_PIN_10,         /*!< GPIO Port Pin 10 Selection. */
+  GPIO_PIN_11,         /*!< GPIO Port Pin 11 Selection. */
+  GPIO_PIN_12,         /*!< GPIO Port Pin 12 Selection. */
+  GPIO_PIN_13,         /*!< GPIO Port Pin 13 Selection. */
+  GPIO_PIN_14,         /*!< GPIO Port Pin 14 Selection. */
+  GPIO_PIN_15          /*!< GPIO Port Pin 15 Selection. */
+} gpio_pin_t;
 
-//GPIO PIN number
-#define OP_GPIO_PIN_0               0               //Pin 0
-#define OP_GPIO_PIN_1               1               //Pin 1
-#define OP_GPIO_PIN_2               2               //Pin 2
-#define OP_GPIO_PIN_3               3               //Pin 3
-#define OP_GPIO_PIN_4               4               //Pin 4
-#define OP_GPIO_PIN_5               5               //Pin 5
-#define OP_GPIO_PIN_6               6               //Pin 6
-#define OP_GPIO_PIN_7               7               //Pin 7
-#define OP_GPIO_PIN_8               8               //Pin 8
-#define OP_GPIO_PIN_9               9               //Pin 9
-#define OP_GPIO_PIN_10              10              //Pin 10
-#define OP_GPIO_PIN_11              11              //Pin 11
-#define OP_GPIO_PIN_12              12              //Pin 12
-#define OP_GPIO_PIN_13              13              //Pin 13
-#define OP_GPIO_PIN_14              14              //Pin 14
-#define OP_GPIO_PIN_15              15              //Pin 15
+/**
+ *  @brief Enumeration for GPIO Pin Mode selection options.
+ */
+typedef enum {
+  GPIO_PINMODE_IN,      /*!< GPIO Pin Mode Input Selection. */
+  GPIO_PINMODE_OUT,     /*!< GPIO Pin Mode Output Selection. */
+  GPIO_PINMODE_ALT,     /*!< GPIO Pin Mode Alternate Function Selection. */
+  GPIO_PINMODE_ANALOG   /*!< GPIO Pin Mode Analog Selection. */
+} gpio_pinmode_t;
 
-//PIN MODE [2 bit]
-#define OP_GPIO_PINMODE_IN          0x00            // pin Input mode
-#define OP_GPIO_PINMODE_OUT         0x01            // pin General output mode
-#define OP_GPIO_PINMODE_ALT         0x02            // pin Alternate function mode
-#define OP_GPIO_PINMODE_ANALOG      0x03            // pin analog mode
+/**
+ *  @brief Enumeration for GPIO pin output type.
+ */
+typedef enum {
+  GPIO_OTYPE_PUSHPULL,    /*!< GPIO Pin output type push-pull selection. */
+  GPIO_OTYPE_OPDRAIN      /*!< GPIO Pin output type open drain selection. */
+} gpio_otype_t;
+ 
+/**
+ *  @brief Enumeration for GPIO Pin output speed options.
+ */
+typedef enum {
+  GPIO_OSPEED_LOW,      /*!< GPIO Pin output speed low selection. */
+  GPIO_OSPEED_MED,      /*!< GPIO Pin output speed medium selection. */
+  GPIO_OSPEED_HI,       /*!< GPIO Pin output speed high selection. */
+  GPIO_OSPEED_VHI       /*!< GPIO Pin output speed very high selection. */
+} gpio_ospeed_t;
 
-//OUTPUT TYPE [1 bit]
-#define OP_GPIO_OTYPE_PUSHPULL      0x00            // pin output type push-pull
-#define OP_GPIO_OTYPE_OPDRAIN       0x01            // pin output type open drain
+/**
+ *  @brief Enumeration for GPIO Pin pull-up or pull-down options.
+ */
+typedef enum {
+  GPIO_PUPD_NOPUPD,    /*!< GPIO Pin no pull-up niether pull-down selected. */
+  GPIO_PUPD_PU,        /*!< GPIO Pin pull-up selected. */
+  GPIO_PUPD_PD         /*!< GPIO Pin pull-down selected. */
+} gpio_pupd_t;
 
-//OUTPUT SPEED [2 bit]
-#define OP_GPIO_OSPEED_LOW          0x00            // pin output speed low
-#define OP_GPIO_OSPEED_MED          0x01            // pin output speed medium
-#define OP_GPIO_OSPEED_HI           0x02            // pin output speed high
-#define OP_GPIO_OSPEED_VHI          0x03            // pin output speed very high
+/**
+ *  @brief Enumeration for GPIO Pin alternate function options.
+ */
+typedef enum {
+  GPIO_ALTFUNC_0,   /*!< GPIO Pin alternate funcion number 0  selected. */
+  GPIO_ALTFUNC_1,   /*!< GPIO Pin alternate funcion number 1  selected. */
+  GPIO_ALTFUNC_2,   /*!< GPIO Pin alternate funcion number 2  selected. */
+  GPIO_ALTFUNC_3,   /*!< GPIO Pin alternate funcion number 3  selected. */
+  GPIO_ALTFUNC_4,   /*!< GPIO Pin alternate funcion number 4  selected. */
+  GPIO_ALTFUNC_5,   /*!< GPIO Pin alternate funcion number 5  selected. */
+  GPIO_ALTFUNC_6,   /*!< GPIO Pin alternate funcion number 6  selected. */
+  GPIO_ALTFUNC_7,   /*!< GPIO Pin alternate funcion number 7  selected. */
+  GPIO_ALTFUNC_8,   /*!< GPIO Pin alternate funcion number 8  selected. */
+  GPIO_ALTFUNC_9,   /*!< GPIO Pin alternate funcion number 9  selected. */
+  GPIO_ALTFUNC_10,  /*!< GPIO Pin alternate funcion number 10 selected. */
+  GPIO_ALTFUNC_11,  /*!< GPIO Pin alternate funcion number 11 selected. */
+  GPIO_ALTFUNC_12,  /*!< GPIO Pin alternate funcion number 12 selected. */
+  GPIO_ALTFUNC_13,  /*!< GPIO Pin alternate funcion number 13 selected. */
+  GPIO_ALTFUNC_14,  /*!< GPIO Pin alternate funcion number 14 selected. */
+  GPIO_ALTFUNC_15   /*!< GPIO Pin alternate funcion number 15 selected. */
+} gpio_altFunc_t;
 
-//PIN PULL UP PULL DOWN [2 bit]
-#define OP_GPIO_PUPD_NOPUPD         0x00            // pin no pull up or pulled down
-#define OP_GPIO_PUPD_PU             0x01            // pin pulled up
-#define OP_GPIO_PUPD_PD             0x02            // pin pulled down
+/**
+ *  @brief Enumeration for GPIO Pin interrupt trigger options.
+ */
+typedef enum {
+  GPIO_INTR_FALL,    /*!< GPIO Pin interrupt at falling edge selection. */
+  GPIO_INTR_RISE,    /*!< GPIO Pin interrupt at rising edge selection. */
+  GPIO_INTR_BOTH,    /*!< GPIO Pin interrupt at both edge selection. */
+  GPIO_INTR_NONE     /*!< GPIO Pin interrupt at none of the edges selection. */
+} gpio_intr_t;
 
-//GPIO Alternate Function
-#define OP_GPIO_ALTFUNC_AF0         0x00            // pin alternate function type 0 
-#define OP_GPIO_ALTFUNC_AF1         0x01            // pin alternate function type 1 
-#define OP_GPIO_ALTFUNC_AF2         0x02            // pin alternate function type 2 
-#define OP_GPIO_ALTFUNC_AF3         0x03            // pin alternate function type 3 
-#define OP_GPIO_ALTFUNC_AF4         0x04            // pin alternate function type 4 
-#define OP_GPIO_ALTFUNC_AF5         0x05            // pin alternate function type 5 
-#define OP_GPIO_ALTFUNC_AF6         0x06            // pin alternate function type 6 
-#define OP_GPIO_ALTFUNC_AF7         0x07            // pin alternate function type 7 
-#define OP_GPIO_ALTFUNC_AF8         0x08            // pin alternate function type 8 
-#define OP_GPIO_ALTFUNC_AF9         0x09            // pin alternate function type 9 
-#define OP_GPIO_ALTFUNC_AF10        0x0A            // pin alternate function type 10
-#define OP_GPIO_ALTFUNC_AF11        0x0B            // pin alternate function type 11
-#define OP_GPIO_ALTFUNC_AF12        0x0C            // pin alternate function type 12
-#define OP_GPIO_ALTFUNC_AF13        0x0D            // pin alternate function type 13
-#define OP_GPIO_ALTFUNC_AF14        0x0E            // pin alternate function type 14
-#define OP_GPIO_ALTFUNC_AF15        0x0F            // pin alternate function type 15
-
-//trigger options
-#define OP_GPIO_INTR_FALL           0x00            // Falling edge interrupt trigger
-#define OP_GPIO_INTR_RISE           0x01            // Rising edge interrupt trigger
-#define OP_GPIO_INTR_BOTH           0x02            // Both edge interrupt trigger
-#define OP_GPIO_INTR_NONE           0x03            // Disable interrupt trigger
-
-#define OP_GPIO_EVENT_FALL          0x00            // Falling edge interrupt trigger
-#define OP_GPIO_EVENT_RISE          0x01            // Rising edge interrupt trigger
-#define OP_GPIO_EVENT_BOTH          0x02            // Both edge interrupt trigger
-#define OP_GPIO_EVENT_NONE          0x03            // Disable interrupt trigger
+/**
+ *  @brief Enumeration for GPIO Pin event trigger options.
+ */
+typedef enum {
+  GPIO_EVENT_FALL,    /*!< GPIO Pin event at falling edge selection. */
+  GPIO_EVENT_RISE,    /*!< GPIO Pin event at rising edge selection. */
+  GPIO_EVENT_BOTH,    /*!< GPIO Pin event at both edge selection. */
+  GPIO_EVENT_NONE     /*!< GPIO Pin event at none of the edges selection. */
+} gpio_event_t;
 
 // Structures --------------------------------------------------------------------------------------
+/**
+ *  @brief   GPIO handle objet for handling GPIO requests.
+ */
 typedef struct {
-    uint8_t GPIO_port;
-    uint8_t GPIO_pin;
-    uint8_t GPIO_pinmode;
-    uint8_t GPIO_otype;
-    uint8_t GPIO_ospeed;
-    uint8_t GPIO_pushpull;
-    uint8_t GPIO_atlFunc;
+    gpio_port_t    port;        /*!< Assigned Port. */
+    gpio_pin_t     pin;         /*!< Assigned Pin. */
+    gpio_pinmode_t pinmode;     /*!< Assigned Pin Mode. */
+    gpio_otype_t   otype;       /*!< Assigned Pin output type. */
+    gpio_ospeed_t  ospeed;      /*!< Assigned Pin output speed. */
+    gpio_pupd_t    pushpull;    /*!< Assigned Pin push/pull state. */
+    gpio_altFunc_t atlFunc;     /*!< Assigned Pin alternalte function choice. */
 } gpio_handle_t;
 
 // Function Prototypes -----------------------------------------------------------------------------
 
-gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin);
-uint8_t gpio_pin_init(gpio_handle_t *gpio_handle);
-void gpio_port_switch(uint8_t gpio_port, uint8_t state);
-void gpio_port_reset(uint8_t gpio_port);
-void gpio_pin_toggle(gpio_handle_t *gpio_handle);
+gpio_handle_t gpio_handle_init(gpio_port_t  port, gpio_pin_t pin);
+void gpio_pin_init(gpio_handle_t *gpio_handle);
+void gpio_port_switch(gpio_port_t gpio_port, uint8_t state);
+void gpio_port_reset(gpio_port_t gpio_port, uint8_t state);
+// void gpio_pin_toggle(gpio_handle_t *gpio_handle);
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
-void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);
+//void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);
 //void gpio_stage_event(gpio_handle_t *gpio_handle, uint8_t opt);
 //void gpio_trig_swintr(gpio_handle_t *gpio_handle);
 //void gpio_handle_irq(gpio_handle_t *gpio_handle)

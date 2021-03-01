@@ -3,128 +3,126 @@
  * @brief     Driver API implementation for GPIO peripheral.
  *
  * @author    Shubhankar Chaudhury
- * @date      00 Xxx 20xx
+ * @date      01 Mar 2021
  **************************************************************************************************/
 
 // Includes ----------------------------------------------------------------------------------------
 #include <stm32f407xx_gpio.h>
 
-// Static Deffinition ------------------------------------------------------------------------------
-static uint32_t * port_address(uint8_t port);
+// Static Definition -------------------------------------------------------------------------------
+static gpio_regdef_t * port_address(uint8_t port);
 
 // Functions ---------------------------------------------------------------------------------------
 
 /***************************************************************************************************
- * @fn      gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin)
- * @brief   Initializes the gpio_handle_t object.
+ * @fn      gpio_handle_t gpio_handle_init(gpio_port_t  port, gpio_pin_t pin)
+ * @brief   Initializes the gpio_handle_t object with defaults.
  *
- * @param   port the port to be initialized with.
- * @param   pin the pin to be initialized with.
+ * @param   port Port to be initialized with.
+ * @param   pin Pin to be initialized with.
  * @return  gpio_handle_t object.
  **************************************************************************************************/
-gpio_handle_t gpio_handle_init(uint8_t  port, uint8_t pin)
+gpio_handle_t gpio_handle_init(gpio_port_t  port, gpio_pin_t pin)
 {
-  gpio_handle_t obj;
-  obj.GPIO_port = port;
-  obj.GPIO_pin = pin;
-  obj.GPIO_pinmode = OP_GPIO_PINMODE_IN;
-  obj.GPIO_otype = OP_GPIO_OTYPE_PUSHPULL;
-  obj.GPIO_ospeed = OP_GPIO_OSPEED_LOW;
-  obj.GPIO_pushpull = OP_GPIO_PUPD_NOPUPD;
-  obj.GPIO_atlFunc = OP_GPIO_ALTFUNC_AF0;
-
+  gpio_handle_t obj = {
+    port, 
+    pin, 
+    GPIO_PINMODE_IN,
+    GPIO_OTYPE_PUSHPULL,
+    GPIO_OSPEED_LOW,
+    GPIO_PUPD_NOPUPD,
+    GPIO_ALTFUNC_0
+  };
   return obj;
 }
 
 /***************************************************************************************************
- * @fn      gpio_pin_init(gpio_handle_t *gpio_handle)
+ * @fn      void gpio_pin_init(gpio_handle_t *gpio_handle)
  * @brief   Initializes the pin.
  *
  * @param   gpio_handle handle pointer to the port_pin object.
  * @return  Initialization successful indication with 1 (true).
  **************************************************************************************************/
-uint8_t gpio_pin_init(gpio_handle_t *gpio_handle)
+void gpio_pin_init(gpio_handle_t *gpio_handle)
 {
-  uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
-  uint32_t *offset_ptr;
-  uint32_t *rcc_ahb1enr_ptr = (uint32_t *) ADDR_WITH_OFFSET(MA_RCC_BEG,MO_RCC_AHB1ENR);
-
-  if ((base_ptr == NULL) || (gpio_handle->GPIO_pin > 0x0F))
-  {
-    return 0;
-  }
+  gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
 
   //enable clock
-  *rcc_ahb1enr_ptr |= (ENABLE << gpio_handle->GPIO_port);
+  RCC_MEM_MAP->AHB1ENR |= (ENABLE << gpio_handle->port);
 
   // mode config
-  offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_MODER);
-  *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-  *offset_ptr |= (gpio_handle->GPIO_pinmode << (2*gpio_handle->GPIO_pin));
+  base_ptr->MODER &= ~(0x03 << (2*gpio_handle->pin));
+  base_ptr->MODER |= (gpio_handle->pinmode << (2*gpio_handle->pin));
 
-  switch (gpio_handle->GPIO_pinmode)
+  switch (gpio_handle->pinmode)
   {
-    case OP_GPIO_PINMODE_IN:
-      offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_PUPDR);
-      *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-      *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
+    case GPIO_PINMODE_IN:
+      base_ptr->PUPDR &= ~(0x03 << (2*gpio_handle->pin));
+      base_ptr->PUPDR |= (gpio_handle->pushpull << (2*gpio_handle->pin));
       break;
-    case OP_GPIO_PINMODE_OUT:
-      offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_OTYPER);
-      *offset_ptr &= ~(0x01 << gpio_handle->GPIO_pin);
-      *offset_ptr |= (gpio_handle->GPIO_otype << gpio_handle->GPIO_pin);
-
-      offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_OSPEEDR);
-      *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-      *offset_ptr |= (gpio_handle->GPIO_ospeed << (2*gpio_handle->GPIO_pin));
-
-      offset_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_PUPDR);
-      *offset_ptr &= ~(0x03 << (2*gpio_handle->GPIO_pin));
-      *offset_ptr |= (gpio_handle->GPIO_pushpull << (2*gpio_handle->GPIO_pin));
+    case GPIO_PINMODE_OUT:
+      base_ptr->OTYPER &= ~(0x01 << gpio_handle->pin);
+      base_ptr->OTYPER |= (gpio_handle->otype << gpio_handle->pin);
+      
+      base_ptr->OSPEEDR &= ~(0x03 << (2*gpio_handle->pin));
+      base_ptr->OSPEEDR |= (gpio_handle->ospeed << (2*gpio_handle->pin));
+      
+      base_ptr->PUPDR &= ~(0x03 << (2*gpio_handle->pin));
+      base_ptr->PUPDR |= (gpio_handle->pushpull << (2*gpio_handle->pin));
       break;
-    case OP_GPIO_PINMODE_ALT:
-      offset_ptr = base_ptr + (ADDR_OFFSET(MO_GPIOx_AFRL) + (gpio_handle->GPIO_pin * 4) / 32);
-      *offset_ptr &= ~(0x0F << (4 * (gpio_handle->GPIO_pin % 8)));
-      *offset_ptr |= (gpio_handle->GPIO_atlFunc << (4 * (gpio_handle->GPIO_pin % 8)));
+    case GPIO_PINMODE_ALT:
+      base_ptr->AFR[(gpio_handle->pin / 8)] &= ~(0x0F << (4 * (gpio_handle->pin % 8)));
+      base_ptr->AFR[(gpio_handle->pin / 8)] |= (gpio_handle->atlFunc << (4 * (gpio_handle->pin % 8)));
+
+      base_ptr->OTYPER &= ~(0x01 << gpio_handle->pin);
+      base_ptr->OTYPER |= (gpio_handle->otype << gpio_handle->pin);
+      
+      base_ptr->OSPEEDR &= ~(0x03 << (2*gpio_handle->pin));
+      base_ptr->OSPEEDR |= (gpio_handle->ospeed << (2*gpio_handle->pin));
+      
+      base_ptr->PUPDR &= ~(0x03 << (2*gpio_handle->pin));
+      base_ptr->PUPDR |= (gpio_handle->pushpull << (2*gpio_handle->pin));
+      break;
+    case GPIO_PINMODE_ANALOG:
+      base_ptr->PUPDR &= ~(0x03 << (2*gpio_handle->pin));
       break;
   }
-
-  return 1;
 }
 
 /***************************************************************************************************
- * @fn      void gpio_port_switch(uint8_t gpio_port, uint8_t state)
+ * @fn      void gpio_port_switch(gpio_port_t gpio_port, uint8_t state)
  * @brief   Enable/Disable the port.
  *
- * @param   gpio_port OP_GPIO_PORT_x, port to be enabled/disabled
+ * @param   gpio_port Port to be enabled/disabled
  * @param   state ENABLE / DISABLE 
  * @return  void
  **************************************************************************************************/
-void gpio_port_switch(uint8_t gpio_port, uint8_t state)
+void gpio_port_switch(gpio_port_t gpio_port, uint8_t state)
 {
-  uint32_t *ahb1enr = (uint32_t *) ADDR_WITH_OFFSET(MA_RCC_BEG,MO_RCC_AHB1ENR);
-  if (state == ENABLE)
-  {
-    *ahb1enr |= (ENABLE << gpio_port);
+  if (state == ENABLE) {
+    RCC_MEM_MAP->AHB1ENR |= (ENABLE << gpio_port);
   }
-  else
-  {
-    *ahb1enr &= ~(ENABLE << gpio_port);
+  else {
+    RCC_MEM_MAP->AHB1ENR &= ~(ENABLE << gpio_port);
   }
 }
 
 /***************************************************************************************************
- * @fn      void gpio_port_reset(uint8_t gpio_port)
+ * @fn      void gpio_port_reset(gpio_port_t gpio_port)
  * @brief   Enable/Disable the port.
  *
- * @param   gpio_port OP_GPIO_PORT_x, port to be reset
+ * @param   gpio_port Port to be reset.
+ * @param   state Reset state = ENABLE or DISABLE.
  * @return  void
  **************************************************************************************************/
-void gpio_port_reset(uint8_t gpio_port)
+void gpio_port_reset(gpio_port_t gpio_port, uint8_t state)
 {
-  uint32_t *ahb1rstr = (uint32_t *) ADDR_WITH_OFFSET(MA_RCC_BEG,MO_RCC_AHB1RSTR);
-  *ahb1rstr |= (ENABLE << gpio_port);
-  // *ahb1rstr &= ~(ENABLE << gpio_port);
+  if (state == ENABLE) {
+    RCC_MEM_MAP->AHB1RSTR |= (ENABLE << gpio_port);
+  }
+  else {
+    RCC_MEM_MAP->AHB1RSTR &= ~(ENABLE << gpio_port);
+  }
 }
 
 /***************************************************************************************************
@@ -137,19 +135,14 @@ void gpio_port_reset(uint8_t gpio_port)
  **************************************************************************************************/
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
 {
-  uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
-  uint32_t *bsrr_ptr;
-  if ((base_ptr != NULL) && (gpio_handle->GPIO_pin < 16))
+  gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
+  if(state == ENABLE)
   {
-    bsrr_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_BSRR);
-    if(state)
-    {
-      *bsrr_ptr = ENABLE << (gpio_handle->GPIO_pin);
-    }
-    else
-    {
-      *bsrr_ptr = ENABLE << (gpio_handle->GPIO_pin + 16);
-    }
+    base_ptr->BSRR = ENABLE << (gpio_handle->pin);
+  }
+  else
+  {
+    base_ptr->BSRR = ENABLE << (gpio_handle->pin + 16);
   }
 }
 
@@ -161,114 +154,65 @@ void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
  * @return  void
  * @todo    Implementation code pending.
  **************************************************************************************************/
-void gpio_pin_toggle(gpio_handle_t *gpio_handle)
-{
+// void gpio_pin_toggle(gpio_handle_t *gpio_handle)
+// {
   
-}
+// }
 
 /***************************************************************************************************
  * @fn      uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
- * @brief   Set / reset pin.
+ * @brief   Read the pin state.
  *
  * @param   gpio_handle Handle pointer to the port_pin object.
- * @param   state ON or OFF state.
- * @return  void
+ * @return  Pin state.
  **************************************************************************************************/
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
 {
-  uint8_t state;
-  uint32_t *base_ptr = port_address(gpio_handle->GPIO_port);
-  uint32_t *idr_ptr = base_ptr + ADDR_OFFSET(MO_GPIOx_IDR);
-  state = (uint8_t) (*idr_ptr >> gpio_handle->GPIO_pin) & ENABLE;
+  gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
+  uint8_t state = (uint8_t) (base_ptr->IDR >> gpio_handle->pin) & ENABLE;
   return state;
-}
-
-/***************************************************************************************************
- * @fn      void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt)
- * @brief   Stages interrupt with given option (rising/falling/both edge).
- * @todo    Need to do NVIC implementation and them this Interrupt parts. 
- *
- * @param   gpio_handle Handle pointer to the port_pin object.
- * @param   opt Option for interrupt falling/rising/disable trigger.
- * @return  void
- **************************************************************************************************/
-void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt)
-{
-  uint32_t *exti_imr = (uint32_t *) ADDR_WITH_OFFSET(MA_EXTI_BEG,MO_EXTI_IMR);
-  uint32_t *exti_rtsr = (uint32_t *) ADDR_WITH_OFFSET(MA_EXTI_BEG,MO_EXTI_RTSR);
-  uint32_t *exti_ftsr = (uint32_t *) ADDR_WITH_OFFSET(MA_EXTI_BEG,MO_EXTI_FTSR);
-  uint32_t *syscfg_exticrx = (uint32_t *) ADDR_WITH_OFFSET(MA_SYSCFG_BEG,MO_SYSCFG_EXTICR1);
-  
-  if (opt != OP_GPIO_INTR_NONE)
-  {
-    syscfg_exticrx += (gpio_handle->GPIO_pin / 4);
-    *syscfg_exticrx &= ~(0x0F << (4 * (gpio_handle->GPIO_pin % 4)));
-    *syscfg_exticrx |= (gpio_handle->GPIO_port << (4 * (gpio_handle->GPIO_pin % 4)));
-    *exti_imr |= (ENABLE << gpio_handle->GPIO_pin);
-    if ((opt == OP_GPIO_INTR_RISE) || (opt = OP_GPIO_INTR_BOTH))
-    {
-      *exti_rtsr |= (ENABLE << gpio_handle->GPIO_pin);
-    }
-    else
-    {
-      *exti_rtsr &= ~(ENABLE << gpio_handle->GPIO_pin);
-    }
-    
-    if ((opt == OP_GPIO_INTR_FALL) || (opt = OP_GPIO_INTR_BOTH))
-    {
-      *exti_ftsr |= (ENABLE << gpio_handle->GPIO_pin);
-    }
-    else
-    {
-      *exti_ftsr &= ~(ENABLE << gpio_handle->GPIO_pin);
-    }
-  }
-  else
-  {
-    *exti_imr &= ~(ENABLE << gpio_handle->GPIO_pin);
-  }
 }
 
 // Static Functions --------------------------------------------------------------------------------
 
 /***************************************************************************************************
- * @fn      static uint32_t * port_address(uint8_t port)
+ * @fn      static uint32_t * port_address(gpio_port_t port)
  * @brief   Returns the port's base address
  *
- * @param   port Port name enumeration (OP_GPIO_PORT_x)
+ * @param   port Port name enumeration.
  * @return  base_ptr Pointer to the base address of the given port
  **************************************************************************************************/
-static uint32_t * port_address(uint8_t port)
+static gpio_regdef_t * port_address(gpio_port_t port)
 {
-  uint32_t *base_ptr;
+  gpio_regdef_t *base_ptr;
   switch (port)
   {
-    case OP_GPIO_PORT_A:
-      base_ptr = (uint32_t *) MA_GPIOA_BEG;
+    case GPIO_PORT_A:
+      base_ptr = (gpio_regdef_t *) MA_GPIOA_BEG;
       break;
-    case OP_GPIO_PORT_B:
-      base_ptr = (uint32_t *) MA_GPIOB_BEG;
+    case GPIO_PORT_B:
+      base_ptr = (gpio_regdef_t *) MA_GPIOB_BEG;
       break;
-    case OP_GPIO_PORT_C:
-      base_ptr = (uint32_t *) MA_GPIOC_BEG;
+    case GPIO_PORT_C:
+      base_ptr = (gpio_regdef_t *) MA_GPIOC_BEG;
       break;
-    case OP_GPIO_PORT_D:
-      base_ptr = (uint32_t *) MA_GPIOD_BEG;
+    case GPIO_PORT_D:
+      base_ptr = (gpio_regdef_t *) MA_GPIOD_BEG;
       break;
-    case OP_GPIO_PORT_E:
-      base_ptr = (uint32_t *) MA_GPIOE_BEG;
+    case GPIO_PORT_E:
+      base_ptr = (gpio_regdef_t *) MA_GPIOE_BEG;
       break;
-    case OP_GPIO_PORT_F:
-      base_ptr = (uint32_t *) MA_GPIOF_BEG;
+    case GPIO_PORT_F:
+      base_ptr = (gpio_regdef_t *) MA_GPIOF_BEG;
       break;
-    case OP_GPIO_PORT_G:
-      base_ptr = (uint32_t *) MA_GPIOG_BEG;
+    case GPIO_PORT_G:
+      base_ptr = (gpio_regdef_t *) MA_GPIOG_BEG;
       break;
-    case OP_GPIO_PORT_H:
-      base_ptr = (uint32_t *) MA_GPIOH_BEG;
+    case GPIO_PORT_H:
+      base_ptr = (gpio_regdef_t *) MA_GPIOH_BEG;
       break;
-    case OP_GPIO_PORT_I:
-      base_ptr = (uint32_t *) MA_GPIOI_BEG;
+    case GPIO_PORT_I:
+      base_ptr = (gpio_regdef_t *) MA_GPIOI_BEG;
       break;
     default:
       base_ptr = NULL;

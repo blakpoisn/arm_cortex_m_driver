@@ -21,88 +21,109 @@
 #define ENABLE      0x01
 #define OFF         DISABLE
 #define ON          ENABLE
-#define ADDR_OFFSET(x)      (x/4)               // Offset for 32 bit pointers
-#define ADDR_WITH_OFFSET(x,y)   (x+y)           // Address with offset added
 
-//~~~~~AHB1~~~~~
-//RCC
-#define MA_RCC_BEG          0x40023800U         // Reset and Clock Control [AHB1]
-#define MA_RCC_END          0x40023BFFU
-#define MO_RCC_CR           0x00                // RCC clock control register
-#define MO_RCC_PLLCFGR      0x04                // RCC PLL configuration register
-#define MO_RCC_CFGR         0x08                // RCC clock configuration register
-#define MO_RCC_CIR          0x0C                // RCC clock interrupt register
-#define MO_RCC_AHB1RSTR     0x10                // RCC AHB1 peripheral reset register
-#define MO_RCC_AHB2RSTR     0x14                // RCC AHB2 peripheral reset register
-#define MO_RCC_AHB3RSTR     0x18                // RCC AHB3 peripheral reset register
-#define MO_RCC_APB1RSTR     0x20                // RCC APB1 peripheral reset register
-#define MO_RCC_APB2RSTR     0x24                // RCC APB2 peripheral reset register
-#define MO_RCC_AHB1ENR      0x30                // RCC AHB1 peripheral clock enable register
-#define MO_RCC_AHB2ENR      0x34                // RCC AHB2 peripheral clock enable register
-#define MO_RCC_AHB3ENR      0x38                // RCC AHB3 peripheral clock enable register
-#define MO_RCC_APB1ENR      0x40                // RCC APB1 peripheral clock enable register
-#define MO_RCC_APB2ENR      0x44                // RCC APB2 peripheral clock enable register
-#define MO_RCC_AHB1LPENR    0x50                // RCC AHB1 peripheral low power clock enable reg
-#define MO_RCC_AHB2LPENR    0x54                // RCC AHB2 peripheral low power clock enable reg
-#define MO_RCC_AHB3LPENR    0x58                // RCC AHB3 peripheral low power clock enable reg
-#define MO_RCC_APB1LPENR    0x60                // RCC APB1 peripheral low power clock enable reg
-#define MO_RCC_APB2LPENR    0x64                // RCC APB2 peripheral low power clock enable reg
-#define MO_RCC_BDCR         0x70                // RCC backup domain control register
-#define MO_RCC_CSR          0x74                // RCC clock control & status register
-#define MO_RCC_SSCGR        0x80                // RCC spread spectrum clock generation register
-#define MO_RCC_PLLI2SCFGR   0x84                // RCC PLLI2S configuration register
-//CRC
-#define MA_CRC_BEG          0x40023000U         // Cyclic Redundancy Check [AHB1]
-#define MA_CRC_END          0x400233FFU
-//GPIO
-#define MA_GPIOA_BEG        0x40020000U         // General Purpose IO - Port A [AHB1]
-#define MA_GPIOA_END        0x400203FFU
-#define MA_GPIOB_BEG        0x40020400U         // General Purpose IO - Port B [AHB1]
-#define MA_GPIOB_END        0x400207FFU
-#define MA_GPIOC_BEG        0x40020800U         // General Purpose IO - Port C [AHB1]
-#define MA_GPIOC_END        0x40020BFFU
-#define MA_GPIOD_BEG        0x40020C00U         // General Purpose IO - Port D [AHB1]
-#define MA_GPIOD_END        0x40020FFFU
-#define MA_GPIOE_BEG        0x40021000U         // General Purpose IO - Port E [AHB1]
-#define MA_GPIOE_END        0x400213FFU
-#define MA_GPIOF_BEG        0x40021400U         // General Purpose IO - Port F [AHB1]
-#define MA_GPIOF_END        0x400217FFU
-#define MA_GPIOG_BEG        0x40021800U         // General Purpose IO - Port G [AHB1]
-#define MA_GPIOG_END        0x40021BFFU
-#define MA_GPIOH_BEG        0x40021C00U         // General Purpose IO - Port H [AHB1]
-#define MA_GPIOH_END        0x40021FFFU
-#define MA_GPIOI_BEG        0x40022000U         // General Purpose IO - Port I [AHB1]
-#define MA_GPIOI_END        0x400223FFU
-#define MO_GPIOx_MODER      0X00                // GPIO port mode register
-#define MO_GPIOx_OTYPER     0x04                // GPIO port output type register
-#define MO_GPIOx_OSPEEDR    0x08                // GPIO output speed register
-#define MO_GPIOx_PUPDR      0x0C                // GPIO pull-up/pull-down register
-#define MO_GPIOx_IDR        0x10                // GPIO input data register
-#define MO_GPIOx_ODR        0x14                // GPIO output data register
-#define MO_GPIOx_BSRR       0x18                // GPIO port bit set/reset register
-#define MO_GPIOx_LCKR       0x1C                // GPIO port configuration lock register
-#define MO_GPIOx_AFRL       0x20                // GPIO port bit alternate function low register (7:0)
-#define MO_GPIOx_AFRH       0x24                // GPIO port bit alternate function high register (15:8)
+//AHB1
+#define MA_RCC_BEG          0x40023800U         /*!< Reset and Clock Control [AHB1] */
+#define MA_CRC_BEG          0x40023000U         /*!< Cyclic Redundancy Check [AHB1] */
+#define MA_GPIOA_BEG        0x40020000U         /*!< General Purpose IO - Port A [AHB1] */
+#define MA_GPIOB_BEG        0x40020400U         /*!< General Purpose IO - Port B [AHB1] */
+#define MA_GPIOC_BEG        0x40020800U         /*!< General Purpose IO - Port C [AHB1] */
+#define MA_GPIOD_BEG        0x40020C00U         /*!< General Purpose IO - Port D [AHB1] */
+#define MA_GPIOE_BEG        0x40021000U         /*!< General Purpose IO - Port E [AHB1] */
+#define MA_GPIOF_BEG        0x40021400U         /*!< General Purpose IO - Port F [AHB1] */
+#define MA_GPIOG_BEG        0x40021800U         /*!< General Purpose IO - Port G [AHB1] */
+#define MA_GPIOH_BEG        0x40021C00U         /*!< General Purpose IO - Port H [AHB1] */
+#define MA_GPIOI_BEG        0x40022000U         /*!< General Purpose IO - Port I [AHB1] */
 
-//~~~~APB2~~~~~
-//EXTI
-#define MA_EXTI_BEG         0x40013C00U         // External interrupt/event controller
-#define MA_EXTI_END         0x40013FFFU
-#define MO_EXTI_IMR         0x00                // Interrupt mask register
-#define MO_EXTI_EMR         0x04                // Event mask register
-#define MO_EXTI_RTSR        0x08                // Rising trigger selection register
-#define MO_EXTI_FTSR        0x0C                // Falling trigger selection register
-#define MO_EXTI_SWIER       0x10                // Software interrupt event register
-#define MO_EXTI_PR          0x14                // Pending register
-//SYSCFG
-#define MA_SYSCFG_BEG       0x40013800U         // System configuration
-#define MA_SYSCFG_END       0x40013BFFU
-#define MO_SYSCFG_MEMRMP    0x00                // Memory remap register
-#define MO_SYSCFG_PMC       0x04                // Peripheral mode configuration register
-#define MO_SYSCFG_EXTICR1   0x08                // EXTI configuration register 1
-#define MO_SYSCFG_EXTICR2   0x0C                // EXTI configuration register 2
-#define MO_SYSCFG_EXTICR3   0x10                // EXTI configuration register 3
-#define MO_SYSCFG_EXTICR4   0x14                // EXTI configuration register 4
-#define MO_SYSCFG_CMPCR     0x20                // Compensation cell control register
+//APB2
+#define MA_EXTI_BEG         0x40013C00U         /*!< External interrupt/event controller */
+#define MA_SYSCFG_BEG       0x40013800U         /*!< System configuration */
+
+// Structures --------------------------------------------------------------------------------------
+/**
+ *  @brief Register deffinition for GPIO memory map.
+ */
+typedef struct {
+  volatile uint32_t MODER;      /*!< Offset: 0x00 | GPIO port mode register */
+  volatile uint32_t OTYPER;     /*!< Offset: 0x04 | GPIO port output type register */
+  volatile uint32_t OSPEEDR;    /*!< Offset: 0x08 | GPIO output speed register */
+  volatile uint32_t PUPDR;      /*!< Offset: 0x0C | GPIO pull-up/pull-down register */
+  volatile uint32_t IDR;        /*!< Offset: 0x10 | GPIO input data register */
+  volatile uint32_t ODR;        /*!< Offset: 0x14 | GPIO output data register */
+  volatile uint32_t BSRR;       /*!< Offset: 0x18 | GPIO port bit set/reset register */
+  volatile uint32_t LCKR;       /*!< Offset: 0x1C | GPIO port configuration lock register */
+  volatile uint32_t AFR[2];     /*!< Offset: 0x20 | GPIO port bit alternate function register */
+} gpio_regdef_t;
+
+/**
+ *  @brief Register deffinition for Reset & Clock Control register memory map.
+ */
+typedef struct {
+  volatile uint32_t CR;         /*!< Offset: 0x00 | RCC clock control register. */
+  volatile uint32_t PLLCFGR;    /*!< Offset: 0x04 | RCC PLL configuration register. */
+  volatile uint32_t CFGR;       /*!< Offset: 0x08 | RCC clock configuration register. */
+  volatile uint32_t CIR;        /*!< Offset: 0x0C | RCC clock interrupt register. */
+  volatile uint32_t AHB1RSTR;   /*!< Offset: 0x10 | RCC AHB1 peripheral reset register. */
+  volatile uint32_t AHB2RSTR;   /*!< Offset: 0x14 | RCC AHB2 peripheral reset register. */
+  volatile uint32_t AHB3RSTR;   /*!< Offset: 0x18 | RCC AHB3 peripheral reset register. */
+  volatile uint32_t RES0;       /*!< Offset: 0x1C | Reserved. */
+  volatile uint32_t APB1RSTR;   /*!< Offset: 0x20 | RCC APB1 peripheral reset register. */
+  volatile uint32_t APB2RSTR;   /*!< Offset: 0x24 | RCC APB2 peripheral reset register. */
+  volatile uint32_t RES1;       /*!< Offset: 0x28 | Reserved. */
+  volatile uint32_t RES2;       /*!< Offset: 0x2C | Reserved. */
+  volatile uint32_t AHB1ENR;    /*!< Offset: 0x30 | RCC AHB1 peripheral clock enable register. */
+  volatile uint32_t AHB2ENR;    /*!< Offset: 0x34 | RCC AHB2 peripheral clock enable register. */
+  volatile uint32_t AHB3ENR;    /*!< Offset: 0x38 | RCC AHB3 peripheral clock enable register. */
+  volatile uint32_t RES3;       /*!< Offset: 0x3C | Reserved. */
+  volatile uint32_t APB1ENR;    /*!< Offset: 0x40 | RCC APB1 peripheral clock enable register. */
+  volatile uint32_t APB2ENR;    /*!< Offset: 0x44 | RCC APB2 peripheral clock enable register. */
+  volatile uint32_t RES4;       /*!< Offset: 0x48 | Reserved. */
+  volatile uint32_t RES5;       /*!< Offset: 0x4C | Reserved. */
+  volatile uint32_t AHB1LPENR;  /*!< Offset: 0x50 | RCC AHB1 peripheral low power clock enable register. */
+  volatile uint32_t AHB2LPENR;  /*!< Offset: 0x54 | RCC AHB2 peripheral low power clock enable register. */
+  volatile uint32_t AHB3LPENR;  /*!< Offset: 0x58 | RCC AHB3 peripheral low power clock enable register. */
+  volatile uint32_t RES6;       /*!< Offset: 0x5C | Reserved. */
+  volatile uint32_t APB1LPENR;  /*!< Offset: 0x60 | RCC APB1 peripheral low power clock enable reg. */
+  volatile uint32_t APB2LPENR;  /*!< Offset: 0x64 | RCC APB2 peripheral low power clock enable reg. */
+  volatile uint32_t RES7;       /*!< Offset: 0x68 | Reserved. */
+  volatile uint32_t RES8;       /*!< Offset: 0x6C | Reserved. */
+  volatile uint32_t BDCR;       /*!< Offset: 0x70 | RCC backup domain control register. */
+  volatile uint32_t CSR;        /*!< Offset: 0x74 | RCC clock control & status register. */
+  volatile uint32_t RES9;       /*!< Offset: 0x78 | Reserved. */
+  volatile uint32_t RES10;      /*!< Offset: 0x7C | Reserved. */
+  volatile uint32_t SSCGR;      /*!< Offset: 0x80 | RCC spread spectrum clock generation register. */
+  volatile uint32_t PLLI2SCFGR; /*!< Offset: 0x84 | RCC PLLI2S configuration register. */
+  volatile uint32_t PLLSAICFGR; /*!< Offset: 0x88 | RCC PLL configuration register */
+  volatile uint32_t DCKCFGR;    /*!< Offset: 0x8C | RCC Dedicated Clock Configuration register. */
+} rcc_regdef_t;
+
+/**
+ *  @brief Register deffinition for EXTI registers memory map.
+ */
+typedef struct {
+  volatile uint32_t IMR;        /*!< Offset: 0x00 | Interrupt mask register. */
+  volatile uint32_t EMR;        /*!< Offset: 0x04 | Event mask register. */
+  volatile uint32_t RTSR;       /*!< Offset: 0x08 | Rising trigger selection register. */
+  volatile uint32_t FTSR;       /*!< Offset: 0x0C | Falling trigger selection register. */
+  volatile uint32_t SWIER;      /*!< Offset: 0x10 | Software interrupt event register. */
+  volatile uint32_t PR;         /*!< Offset: 0x14 | Pending Register. */
+} exti_regdef_t;
+
+/**
+ *  @brief Register deffinition for System Configuration registers memory map.
+ */
+typedef struct {
+  volatile uint32_t MEMRMP;     /*!< Offset: 0x00 | Memory remap register. */
+  volatile uint32_t PMC;        /*!< Offset: 0x04 | Peripheral mode configuration register. */
+  volatile uint32_t EXTICR[4];  /*!< Offset: 0x08 | EXTI configuration register. */
+  volatile uint32_t RES0;       /*!< Offset: 0x18 | Reserved. */
+  volatile uint32_t RES1;       /*!< Offset: 0x1C | Reserved. */
+  volatile uint32_t PR;         /*!< Offset: 0x20 | Compensation cell control register. */
+} syscfg_regdef_t;
+
+// Peripheral Definitions --------------------------------------------------------------------------
+#define RCC_MEM_MAP     ((rcc_regdef_t *)MA_RCC_BEG)        /*!< RCC register memory map access pointer. */
+#define EXTI_MEM_MAP    ((exti_regdef_t *)MA_EXTI_BEG)      /*!< EXTI register memory map access pointer. */
+#define SYSCFG_MEM_MAP  ((syscfg_regdef_t *)MA_SYSCFG_BEG)  /*!< System Configuration register memory map access pointer. */
 
 #endif /* STM32F407XX_DRIVER_H_ */
