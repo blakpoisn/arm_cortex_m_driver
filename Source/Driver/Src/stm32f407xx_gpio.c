@@ -3,7 +3,7 @@
  * @brief     Driver API implementation for GPIO peripheral.
  *
  * @author    Shubhankar Chaudhury
- * @date      01 Mar 2021
+ * @date      02 Mar 2021
  **************************************************************************************************/
 
 // Includes ----------------------------------------------------------------------------------------
@@ -41,7 +41,6 @@ gpio_handle_t gpio_handle_init(gpio_port_t  port, gpio_pin_t pin)
  * @brief   Initializes the pin.
  *
  * @param   gpio_handle handle pointer to the port_pin object.
- * @return  Initialization successful indication with 1 (true).
  **************************************************************************************************/
 void gpio_pin_init(gpio_handle_t *gpio_handle)
 {
@@ -113,7 +112,6 @@ void gpio_port_switch(gpio_port_t gpio_port, uint8_t state)
  *
  * @param   gpio_port Port to be reset.
  * @param   state Reset state = ENABLE or DISABLE.
- * @return  void
  **************************************************************************************************/
 void gpio_port_reset(gpio_port_t gpio_port, uint8_t state)
 {
@@ -127,11 +125,10 @@ void gpio_port_reset(gpio_port_t gpio_port, uint8_t state)
 
 /***************************************************************************************************
  * @fn      void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
- * @brief   set / reset pin.
+ * @brief   Write to the pin.
  *
- * @param   gpio_handle handle pointer to the port_pin object.
+ * @param   gpio_handle Pointer to the port_pin object.
  * @param   state ON or OFF state.
- * @return  void
  **************************************************************************************************/
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
 {
@@ -147,17 +144,57 @@ void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state)
 }
 
 /***************************************************************************************************
+ * @fn      void gpio_port_write(gpio_port_t gpio_port, uint16_t data)
+ * @brief   Writes to the port with provided data.
+ * 
+ * @param   gpio_port GPIO port to which data is to be written.
+ * @param   data The data to be written.
+ **************************************************************************************************/
+void gpio_port_write(gpio_port_t gpio_port, uint16_t data)
+{
+  gpio_regdef_t *base_ptr = port_address(gpio_port);
+  base_ptr->ODR = (uint32_t) data;
+}
+
+/***************************************************************************************************
  * @fn      void gpio_pin_toggle(gpio_handle_t *gpio_handle)
  * @brief   Toggles the pin output.
  *
- * @param   gpio_handle - handle pointer to the port_pin object.
- * @return  void
- * @todo    Implementation code pending.
+ * @param   gpio_handle Handle to the port_pin object.
  **************************************************************************************************/
-// void gpio_pin_toggle(gpio_handle_t *gpio_handle)
-// {
-  
-// }
+void gpio_pin_toggle(gpio_handle_t *gpio_handle)
+{
+  gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
+  base_ptr->ODR ^= ENABLE << (gpio_handle->pin);
+}
+
+/***************************************************************************************************
+ * @fn      uint8_t gpio_pin_outputStatus(gpio_handle_t *gpio_handle)
+ * @brief   Reads the output pin status.
+ *
+ * @param   gpio_handle Handle to the gpio pin object.
+ * @return  Output staus of the pin.
+ **************************************************************************************************/
+uint8_t gpio_pin_outputStatus(gpio_handle_t *gpio_handle)
+{
+  gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
+  uint8_t status = (uint8_t) (base_ptr->ODR >> gpio_handle->pin) & ENABLE;
+  return status;
+}
+
+/***************************************************************************************************
+ * @fn      uint16_t gpio_port_outputStatus(gpio_port_t gpio_port)
+ * @brief   Reads the output port status.
+ *
+ * @param   gpio_port The gpio port.
+ * @return  Output staus of the port.
+ **************************************************************************************************/
+uint16_t gpio_port_outputStatus(gpio_port_t gpio_port)
+{
+  gpio_regdef_t *base_ptr = port_address(gpio_port);
+  uint16_t status = (uint16_t) base_ptr->ODR & 0x0000FFFFU;
+  return status;
+}
 
 /***************************************************************************************************
  * @fn      uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
@@ -171,6 +208,20 @@ uint8_t gpio_pin_read(gpio_handle_t *gpio_handle)
   gpio_regdef_t *base_ptr = port_address(gpio_handle->port);
   uint8_t state = (uint8_t) (base_ptr->IDR >> gpio_handle->pin) & ENABLE;
   return state;
+}
+
+/***************************************************************************************************
+ * @fn      uint16_t gpio_port_read(gpio_port_t gpio_port)
+ * @brief   Reads the port data.
+ *
+ * @param   gpio_port GPIO port to be read.
+ * @return  Data read from the given GPIO port.
+ **************************************************************************************************/
+uint16_t gpio_port_read(gpio_port_t gpio_port)
+{
+  gpio_regdef_t *base_ptr = port_address(gpio_port);
+  uint16_t data = (uint16_t) base_ptr->IDR & 0x0000FFFFU;
+  return data;
 }
 
 // Static Functions --------------------------------------------------------------------------------

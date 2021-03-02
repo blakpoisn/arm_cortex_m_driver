@@ -3,7 +3,7 @@
  * @brief     API Header for GPIO implementation.
  * 
  * @author    Shubhankar Chaudhury
- * @date      01 Mar 2021
+ * @date      02 Mar 2021
  **************************************************************************************************/
 
 #ifndef STM32F407XX_GPIO_H_
@@ -149,9 +149,16 @@ gpio_handle_t gpio_handle_init(gpio_port_t  port, gpio_pin_t pin);
 void gpio_pin_init(gpio_handle_t *gpio_handle);
 void gpio_port_switch(gpio_port_t gpio_port, uint8_t state);
 void gpio_port_reset(gpio_port_t gpio_port, uint8_t state);
-// void gpio_pin_toggle(gpio_handle_t *gpio_handle);
+
 void gpio_pin_write(gpio_handle_t *gpio_handle, uint8_t state);
+void gpio_port_write(gpio_port_t gpio_port, uint16_t data);
+void gpio_pin_toggle(gpio_handle_t *gpio_handle);
+uint8_t gpio_pin_outputStatus(gpio_handle_t *gpio_handle);
+uint16_t gpio_port_outputStatus(gpio_port_t gpio_port);
+
 uint8_t gpio_pin_read(gpio_handle_t *gpio_handle);
+uint16_t gpio_port_read(gpio_port_t gpio_port);
+
 //void gpio_stage_intr(gpio_handle_t *gpio_handle, uint8_t opt);
 //void gpio_stage_event(gpio_handle_t *gpio_handle, uint8_t opt);
 //void gpio_trig_swintr(gpio_handle_t *gpio_handle);
