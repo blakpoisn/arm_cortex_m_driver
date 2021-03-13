@@ -1,6 +1,6 @@
 /***************************************************************************************************
  * @file      stm32f407xx_driver.h
- * @brief     API Header for Driver implementation
+ * @brief     API Header for Driver header file.
  *            
  * @author    Shubhankar Chaudhury
  * @date      28 Feb 2021
@@ -21,6 +21,9 @@
 #define ENABLE      0x01
 #define OFF         DISABLE
 #define ON          ENABLE
+#define FALSE       DISABLE
+#define TRUE        ENABLE
+
 
 //AHB1
 #define MA_RCC_BEG          0x40023800U         /*!< Reset and Clock Control [AHB1] */
@@ -38,6 +41,9 @@
 //APB2
 #define MA_EXTI_BEG         0x40013C00U         /*!< External interrupt/event controller */
 #define MA_SYSCFG_BEG       0x40013800U         /*!< System configuration */
+
+//Core
+// #define MA_NVIC_BEG         0xE000E100U
 
 // Structures --------------------------------------------------------------------------------------
 /**
@@ -93,7 +99,7 @@ typedef struct {
   volatile uint32_t RES10;      /*!< Offset: 0x7C | Reserved. */
   volatile uint32_t SSCGR;      /*!< Offset: 0x80 | RCC spread spectrum clock generation register. */
   volatile uint32_t PLLI2SCFGR; /*!< Offset: 0x84 | RCC PLLI2S configuration register. */
-  volatile uint32_t PLLSAICFGR; /*!< Offset: 0x88 | RCC PLL configuration register */
+  volatile uint32_t PLLSAICFGR; /*!< Offset: 0x88 | RCC PLLSAI configuration register. */
   volatile uint32_t DCKCFGR;    /*!< Offset: 0x8C | RCC Dedicated Clock Configuration register. */
 } rcc_regdef_t;
 
