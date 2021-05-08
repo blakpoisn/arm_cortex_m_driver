@@ -27,20 +27,20 @@
 
 // Structures --------------------------------------------------------------------------------------
 /**
- *  @brief Register deffinition for NVIC CPU core memory map.
+ *  @brief Register definition for NVIC CPU core memory map.
  */
 typedef struct {
-  volatile uint32_t ISER[8],       /*!< Interrupt Set Enable Register. */
-  volatile uint32_t RESa[24],      /*!< Reserved. */
-  volatile uint32_t ICER[8],       /*!< Interrupt Clear Enable Register. */
-  volatile uint32_t RESb[24],      /*!< Reserved. */
-  volatile uint32_t ISPR[8],       /*!< Interrupt Set Pending Register. */
-  volatile uint32_t RESc[24],      /*!< Reserved. */
-  volatile uint32_t ICPR[8],       /*!< Interrupt Clear Pending Register. */
-  volatile uint32_t RESd[24],      /*!< Reserved. */
-  volatile uint32_t IABR[8],       /*!< Interrupt Active Bit Register. */
-  volatile uint32_t RESe[56],      /*!< Reserved. */
-  volatile uint32_t IPR[60]        /*!< Interrupt Priority Register. */
+  volatile uint32_t ISER[8];       /*!< Interrupt Set Enable Register. */
+  volatile uint32_t RESa[24];      /*!< Reserved. */
+  volatile uint32_t ICER[8];       /*!< Interrupt Clear Enable Register. */
+  volatile uint32_t RESb[24];      /*!< Reserved. */
+  volatile uint32_t ISPR[8];       /*!< Interrupt Set Pending Register. */
+  volatile uint32_t RESc[24];      /*!< Reserved. */
+  volatile uint32_t ICPR[8];       /*!< Interrupt Clear Pending Register. */
+  volatile uint32_t RESd[24];      /*!< Reserved. */
+  volatile uint32_t IABR[8];       /*!< Interrupt Active Bit Register. */
+  volatile uint32_t RESe[56];      /*!< Reserved. */
+  volatile uint32_t IPR[60];       /*!< Interrupt Priority Register. */
 } nvic_regdef_t;
 
 // Peripheral Definitions --------------------------------------------------------------------------
